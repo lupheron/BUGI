@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+}
+
+/* HEADER */
+.header_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ---ICON--- */
+.icon_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 250px;
+
+    img {
+        width: 155px;
+        height: 135px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+}
+
+/* ---PROFILE CONTAINER--- */
+
+.profile_container {
+    width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .header_profile {
+        img {
+            width: 70px;
+            height: 65px;
+            border: none;
+            border-radius: 50%;
+        }
+    }
+}
