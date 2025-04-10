@@ -31,7 +31,7 @@ function Header() {
                 </div>
 
                 <div className={css.header_profile}>
-                    <img src={profile} alt="" onClick={navigate("/profile")}/>
+                    <img src={profile} alt="" onClick={() => navigate("/profile")} />
                 </div>
             </div>
         </div>
