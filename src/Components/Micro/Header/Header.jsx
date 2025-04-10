@@ -1,7 +1,7 @@
 import React from 'react';
 import css from "../../../assets/css/index.module.css"
 import icon from "../../../assets/media/images/icon.jpg"
-import { MailOutlined } from '@ant-design/icons';
+import { LogoutOutlined, MailOutlined } from '@ant-design/icons';
 import profile from "../../../assets/media/images/cicada.jpg"
 import { useNavigate } from 'react-router-dom';
 
@@ -31,7 +31,11 @@ function Header() {
                 </div>
 
                 <div className={css.header_profile}>
-                    <img src={profile} alt="" onClick={() => navigate("/profile")} />
+                    <img src={profile} alt="" onClick={() => navigate("/mainpage/profile")} />
+                </div>
+
+                <div className={css.header_logout} onClick={() => navigate("/")}>
+                    <LogoutOutlined />
                 </div>
             </div>
         </div>
