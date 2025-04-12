@@ -12,8 +12,8 @@ function App() {
     <div className={css.app}>
       <Routes>
         <Route path="/" element={<Site />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/famregister" element={<Register />} />
+        <Route path="/famsignin" element={<SignIn />} />
         <Route path="/mainpage" element={<Main />} />
         <Route path="/mainpage/profile" element={<Profile />} />
       </Routes>

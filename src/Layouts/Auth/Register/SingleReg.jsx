@@ -1,22 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Form, Input, Button } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import css from "../../../assets/css/index.module.css";
 import { useAuth } from '../AuthStore';
 import { useForm } from 'antd/es/form/Form';
 
-function Register() {
+function SingleReg() {
     const { handleRegister } = useAuth();
-    const [members, setMembers] = useState([{ key: 0 }, { key: 1 }]);
     const [form] = useForm();
-
-    const handleAddMember = () => {
-        setMembers([...members, { key: members.length }]);
-    };
-
-    const handleRemoveMember = (index) => {
-        setMembers(members.filter((_, i) => i !== index));
-    };
 
     return (
         <div className={css.register_container}>
@@ -24,16 +14,16 @@ function Register() {
                 className={css.auth_form}
                 layout="vertical"
                 onFinish={(values) => {
+                    values.status = "Single";
                     handleRegister(values);
                     form.resetFields();
-                    setMembers([{ key: 0 }, { key: 1 }]);
                 }}
                 form={form}
             >
-                <h1>Family Registration</h1>
+                <h1>Single User Registration</h1>
 
                 <Form.Item
-                    label="Primary User's Name"
+                    label="Your Name"
                     name="name"
                     rules={[{ required: true, message: 'Please enter your name!' }]}
                 >
@@ -59,33 +49,7 @@ function Register() {
                     <Input.Password placeholder="Enter your password" />
                 </Form.Item>
 
-                {members.map((member, index) => (
-                    <Form.Item
-                        key={member.key}
-                        label={`Family Member ${index + 1}`}
-                        name={`member_${index}`}
-                        rules={[{ required: true, message: 'Please enter the member name!' }]}
-                    >
-                        <Input
-                            placeholder={`Enter name of family member ${index + 1}`}
-                            addonAfter={
-                                <Button
-                                    type="text"
-                                    danger
-                                    onClick={() => handleRemoveMember(index)}
-                                >
-                                    Remove
-                                </Button>
-                            }
-                        />
-                    </Form.Item>
-                ))}
-
-                <Button type="dashed" onClick={handleAddMember} block>
-                    <PlusCircleOutlined style={{ color: "blue" }} /> Add Member
-                </Button>
-
-                <Form.Item style={{ marginTop: '20px' }}>
+                <Form.Item>
                     <Button type="primary" htmlType="submit" block>
                         Register
                     </Button>
@@ -95,4 +59,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default SingleReg;
