@@ -113,17 +113,6 @@
 
 /* REGISTER */
 
-.register_container {
-    background-color: oklch(21% 0.034 264.665);
-    color: rgb(171, 171, 171);
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    padding: 40px 100px;
-}
-
 .auth_form {
     max-width: 400px;
     margin: 0 auto;

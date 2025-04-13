@@ -1,13 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import css from "../../assets/css/index.module.css"
 import icon from "../../assets/media/images/icon.jpg"
-import { Button, Modal } from 'antd';
+import { Button, Divider, Modal } from 'antd';
 import Typed from 'typed.js';
 import { useNavigate } from 'react-router-dom';
+import AloneRegister from '../Auth/Register/AloneRegister';
+import Register from '../Auth/Register/Register';
+import AloneSign from '../Auth/SignIn/AloneSign';
+import SignIn from '../Auth/SignIn/SignIn';
 
 function Site() {
     const navigate = useNavigate();
     const el = useRef(null);
+
+    let [regtype, setRegtype] = useState("family");
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [authType, setAuthType] = useState(null); // 'register' or 'sign-in'
@@ -37,9 +43,9 @@ function Site() {
     const handleAuthChoice = (choice) => {
         setIsModalOpen(false);
         if (authType === "register") {
-            navigate(choice === "family" ? "/famregister" : "/singregister");
+            navigate(choice === "family" ? "/fam-register" : "/alone-reg");
         } else {
-            navigate(choice === "family" ? "/famsignin" : "/singsignin");
+            navigate(choice === "family" ? "/fam-sign" : "/alone-sign");
         }
     };
 
@@ -89,18 +95,26 @@ function Site() {
             >
                 <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
                     <Button
-                        type="primary"
-                        onClick={() => handleAuthChoice("family")}
+                        type={regtype === "family" ? "primary" : "default"}
+                        onClick={() => setRegtype("family")}
                     >
                         Family
                     </Button>
                     <Button
-                        type="default"
-                        onClick={() => handleAuthChoice("single")}
+                        type={regtype === "single" ? "primary" : "default"}
+                        onClick={() => setRegtype("single")}
                     >
                         Single
                     </Button>
                 </div>
+
+                <Divider />
+                {authType === "register" ? (
+                    regtype === "single" ? <AloneRegister /> : <Register />
+                ) : (
+                    regtype === "single" ? <AloneSign /> : <SignIn />
+                )}
+
             </Modal>
         </div>
     );

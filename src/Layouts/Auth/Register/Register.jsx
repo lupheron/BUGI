@@ -15,7 +15,7 @@ function Register() {
     useEffect(() => {
         if (status === "success") {
             message.success("Registration successful!");
-            navigate("/famsignin");
+            navigate("/fam-sign");
         } else if (status === "error") {
             message.error("Registration failed. Please try again.");
         }

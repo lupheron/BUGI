@@ -8,7 +8,7 @@ export const useAuth = create((set, get) => ({
     setFormData: (data) => set({ formData: data }),
 
     getFamily: () => {
-        axios.get("http://opsurt.test/api/users")
+        axios.get("http://bugi.test/api/families")
             .then(res => {
                 set({ users: res.data });
             }).catch(error => {
@@ -20,7 +20,7 @@ export const useAuth = create((set, get) => ({
         axios.post("http://bugi.test/api/family/register", value)
             .then(res => {
                 set({ status: "success" });
-                get().getUsers();
+                get().getFamily();
             })
             .catch(error => {
                 set({ status: "error" });
@@ -28,18 +28,24 @@ export const useAuth = create((set, get) => ({
             });
     },
 
-    handleLogin: (values) => {
-        axios.post("http://bugi.test/api/family/login", values)
+    getAlone: () => {
+        axios.get("http://bugi.test/api/alone-users")
             .then(res => {
-                if (res.data.token) {
-                    localStorage.setItem("token", res.data.token);
-                    set({ status: "success" });
-                }
-            })
-            .catch(error => {
-                set({ status: "error" })
+                set({ users: res.data });
+            }).catch(error => {
                 console.log(error)
             })
+    },
 
+    handleRegisterAlone: (value) => {
+        axios.post("http://bugi.test/api/alone-reg", value)
+            .then(res => {
+                set({ status: "success" });
+                get().getAlone();
+            })
+            .catch(error => {
+                set({ status: "error" });
+                console.log(error);
+            });
     },
 }));
