@@ -1,11 +1,24 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import css from "../../../assets/css/index.module.css";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function SignIn() {
+    const navigate = useNavigate();
+
     const handleLogin = (values) => {
-        console.log("Logging in with:", values);
-        // You can add your login logic here (e.g., API call)
+        axios.post('http://bugi.test/api/family/login', values)
+            .then((res) => {
+                if (res.data.token) {
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("username", res.data.name);
+                    navigate('/mainpage');
+                }
+            })
+            .catch((error) => {
+                console.error('Login error:', error);
+            });
     };
 
     return (

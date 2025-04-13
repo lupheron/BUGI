@@ -17,7 +17,7 @@ export const useAuth = create((set, get) => ({
     },
 
     handleRegisterFam: (value) => {
-        axios.post("http://opsurt.test/api/register", value)
+        axios.post("http://bugi.test/api/family/register", value)
             .then(res => {
                 set({ status: "success" });
                 get().getUsers();
@@ -29,7 +29,7 @@ export const useAuth = create((set, get) => ({
     },
 
     handleLogin: (values) => {
-        axios.post("http://opsurt.test/api/login", values)
+        axios.post("http://bugi.test/api/family/login", values)
             .then(res => {
                 if (res.data.token) {
                     localStorage.setItem("token", res.data.token);

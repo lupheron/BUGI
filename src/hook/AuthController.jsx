@@ -1,22 +1,9 @@
-
-import { useEffect, useState } from 'react';
-import Login from '../Layouts/Auth/Login';
+import { Navigate } from 'react-router-dom';
 
 function AuthController({ children }) {
-    const [page, setPage] = useState("");
-    const token = localStorage.getItem("token") || null;
+    const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        if (token) {
-            setPage(children);
-        } else {
-            setPage(<Login />);
-        }
-    }, [children, token]);
-
-
-    return page;
-
+    return token ? children : <Navigate to="/famsignin" replace />;
 }
 
 export default AuthController;
