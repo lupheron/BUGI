@@ -1,19 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import css from "../../../assets/css/index.module.css";
 import icon from "../../../assets/media/images/icon.jpg";
 import { LogoutOutlined, MailOutlined } from '@ant-design/icons';
-import profile from "../../../assets/media/images/cicada.jpg";
+import defaultProfile from "../../../assets/media/images/cicada.jpg"; // Renamed for clarity
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Header() {
     const navigate = useNavigate();
+    const [familyImage, setFamilyImage] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchFamilyImage = async () => {
+            try {
+                const famId = localStorage.getItem("fam_id");
+                if (famId) {
+                    const response = await axios.get(`http://bugi.test/api/families/${famId}`);
+                    if (response.data.status === 200 && response.data.data.img) {
+                        setFamilyImage(`http://bugi.test/${response.data.data.img}`);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching family image:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFamilyImage();
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("username");
+        localStorage.removeItem("fam_id");
         navigate("/");
     };
-
+    
     return (
         <div className={css.header_container}>
             <div className={css.icon_container}>
@@ -34,7 +58,20 @@ function Header() {
                 </div>
 
                 <div className={css.header_profile}>
-                    <img src={profile} alt="profile" onClick={() => navigate("/mainpage/profile")} />
+                    {!loading && (
+                        <img
+                            src={familyImage || defaultProfile}
+                            alt="Family profile"
+                            onClick={() => navigate("/mainpage/profile")}
+                            style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                objectFit: 'cover',
+                                cursor: 'pointer'
+                            }}
+                        />
+                    )}
                 </div>
 
                 <div className={css.header_logout} onClick={handleLogout}>

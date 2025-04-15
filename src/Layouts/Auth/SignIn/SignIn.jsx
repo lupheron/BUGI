@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import css from "../../../assets/css/index.module.css";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +13,10 @@ function SignIn() {
                 if (res.data.token) {
                     localStorage.setItem("token", res.data.token);
                     localStorage.setItem("username", res.data.name);
+                    localStorage.setItem("fam_id", res.data.id);
                     navigate('/mainpage');
+                } else {
+                    message.error('Login failed. Please check your credentials.');
                 }
             })
             .catch((error) => {

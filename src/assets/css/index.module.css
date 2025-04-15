@@ -131,6 +131,29 @@
 
 /* PROFILE */
 
+.settings_container {
+    display: flex;
+    gap: 50px;
+    margin-top: 70px;
+
+    .upload_image {
+        width: 350px;
+        height: 450px;
+        border: 2px dashed #d9d9d9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #fafafa;
+        border-radius: 8px;
+    }
+
+    .upload_image .ant-upload {
+        width: 100%;
+        height: 100%;
+    }
+}
 
 .breadcrumb_nav {
     text-align: center;
@@ -144,6 +167,7 @@
 
 .profile_main {
     margin-top: 60px;
+
     .profile_title {
         text-align: center;
         font-size: 50px;
