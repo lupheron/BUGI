@@ -6,14 +6,15 @@ import { Link, useLocation } from 'react-router-dom';
 import { useForm } from 'antd/es/form/Form';
 import css from "../../assets/css/index.module.css"
 import { UploadOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import FamilyMem from '../../Components/Macro/FamilyMem/FamilyMem';
 
 function Profile() {
-    const { family, family_mem, getFamilyMem, getFamily, columns, handleEdit } = useProfile();
-    const location = useLocation();
-    const [form] = useForm();
+    const { family, getFamily, handleEdit } = useProfile();
     const [familyId, setFamilyId] = useState();
     const [imageUrl, setImageUrl] = useState(null);
+    const [username, setUsername] = useState("");
+    const location = useLocation();
+    const [form] = useForm();
 
     const props = {
         name: 'img',
@@ -60,11 +61,14 @@ function Profile() {
 
     useEffect(() => {
         getFamily();
-        getFamilyMem();
         const fam_id = localStorage.getItem("fam_id");
+        console.log("Retrieved fam_id from localStorage:", fam_id); // Debug
+
         if (fam_id) {
             setFamilyId(fam_id);
             form.setFieldsValue({ id: fam_id });
+        } else {
+            message.error("No family ID found in localStorage");
         }
     }, []);
 
@@ -76,6 +80,7 @@ function Profile() {
                     primary_username: currentFamily.primary_username,
                     email: currentFamily.email,
                 });
+                setUsername(currentFamily.primary_username);
                 if (currentFamily.img) {
                     setImageUrl(`http://bugi.test/${currentFamily.img}`);
                 }
@@ -101,7 +106,7 @@ function Profile() {
             </header>
 
             <main className={css.profile_main}>
-                <h1 className={css.profile_title}>Hello Nuriddinov's Family</h1>
+                <h1 className={css.profile_title}>Hello {username}'s Family</h1>
 
                 <div className={css.settings_container}>
                     <div className={css.image_upload_container}>
@@ -164,12 +169,7 @@ function Profile() {
 
                 <div className={css.profile_table}>
                     <h1>Members of Family</h1>
-                    <Table
-                        rowKey={'id'}
-                        columns={columns}
-                        dataSource={family_mem}
-                        bordered
-                    />
+                    <FamilyMem />
                 </div>
             </main>
         </div>

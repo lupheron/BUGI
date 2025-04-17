@@ -11,3 +11,7 @@
 .calendar_tasks{
     font-size: 10px;
 }
+
+.create_btn {
+    float: right;
+}
