@@ -1,46 +1,87 @@
-import { Button, Divider, message, Table } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Divider, Table, Space } from 'antd';
+import React, { useEffect } from 'react';
 import { useFamMem } from './FamilyMemStore';
-import { useForm } from 'antd/es/form/Form';
 import Edit from './Edit';
 import Create from './Create';
-import css from '../../../assets/css/components.module.css'
+import CreateCat from '../Category/CreateCat';
+import css from '../../../assets/css/components.module.css';
 
-function FamilyMem(props) {
-    const { family_mem, getFamilyMem, columns, handleOpenCreate, isCreating, isEditing, handleClose, selectedmember, handleUpdate, handleCreate } = useFamMem();
-    const [familyId, setFamilyId] = useState();
-    const [form] = useForm();
+function FamilyMem() {
+    const {
+        family_mem,
+        categories,
+        getFamilyMem,
+        getCategories,
+        columns,
+        catColumns,
+        handleOpenCreate,
+        isCreating,
+        isEditing,
+        isCreatingCat,
+        handleClose,
+        selectedmember,
+        handleUpdate,
+        handleCreate,
+        handleCreateCat,
+        handleDeleteCat
+    } = useFamMem();
+
+    const familyId = localStorage.getItem("fam_id");
 
     useEffect(() => {
-        const fam_id = localStorage.getItem("fam_id");
-        console.log("Retrieved fam_id from localStorage:", fam_id);
-
-        if (fam_id) {
-            setFamilyId(fam_id);
-            form.setFieldsValue({ fam_id }); // Add this line
-            getFamilyMem(fam_id);
-        } else {
-            message.error("No family ID found in localStorage");
+        if (familyId) {
+            getFamilyMem(familyId);
+            getCategories(familyId);
         }
-    }, []);
+    }, [familyId]);
 
+    const expandedRowRender = (member) => {
+        const memberCategories = categories[member.id] || [];
+        const remaining = 3 - memberCategories.length;
+
+        return (
+            <div>
+                <p style={{ marginBottom: 16 }}>
+                    {remaining > 0
+                        ? `Can add ${remaining} more categories`
+                        : 'Category limit reached (3/3)'}
+                </p>
+                <Table
+                    columns={catColumns}
+                    dataSource={memberCategories}
+                    pagination={false}
+                    rowKey="id"
+                    bordered
+                    locale={{
+                        emptyText: 'No categories yet'
+                    }}
+                />
+            </div>
+        );
+    };
 
     return (
         <div>
             <div className={css.create_btn}>
-                <Button onClick={handleOpenCreate} type='primary'>Yangi oila a'zosi qo'shish</Button>
+                <Button onClick={handleOpenCreate} type='primary'>
+                    Yangi oila a'zosi qo'shish
+                </Button>
             </div>
             <br />
             <Divider />
+
             <Table
                 rowKey={'id'}
                 columns={columns}
+                expandable={{
+                    expandedRowRender,
+                    rowExpandable: () => true // Always show expandable row
+                }}
                 dataSource={family_mem}
                 bordered
             />
 
             <Edit
-                title="Tahrirlash"
                 isEditing={isEditing}
                 handleClose={handleClose}
                 selectedItem={selectedmember}
@@ -48,10 +89,17 @@ function FamilyMem(props) {
             />
 
             <Create
-                title="Qo'shish"
                 isCreating={isCreating}
                 handleClose={handleClose}
                 handleCreate={handleCreate}
+            />
+
+            <CreateCat
+                isCreating={isCreatingCat}
+                handleClose={handleClose}
+                handleCreate={handleCreateCat}
+                selectedMember={selectedmember}
+                currentCount={(categories[selectedmember?.id] || []).length}
             />
         </div>
     );

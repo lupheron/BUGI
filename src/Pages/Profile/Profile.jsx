@@ -35,15 +35,6 @@ function Profile() {
         showUploadList: false, // This hides the file list
     };
 
-    const expandedRowRender = (items) => (
-        <Table
-            columns={""}
-            dataSource={items}
-            pagination={false}
-            rowKey={'id'}
-        />
-    );
-
     const generateBreadcrumbs = () => {
         const paths = location.pathname.split('/').filter((p) => p);
         let fullPath = '';
