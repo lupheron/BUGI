@@ -1,4 +1,4 @@
-import { Button, Divider, Table, Space } from 'antd';
+import { Button, Divider, Table } from 'antd';
 import React, { useEffect } from 'react';
 import { useFamMem } from './FamilyMemStore';
 import Edit from './Edit';

@@ -1,74 +1,56 @@
-import React from 'react';
-import { Badge, Calendar } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Badge, Calendar, Button } from 'antd';
 import css from '../../../assets/css/components.module.css';
+import dayjs from 'dayjs';
+import { useCalStore } from './CalStore';
+import ReminderForm from './ReminderForm';
 
-const getListData = value => {
-    let listData = []; // Specify the type of listData
-    switch (value.date()) {
-        case 8:
-            listData = [
-                { type: 'warning', content: 'This is warning event.' },
-                { type: 'success', content: 'This is usual event.' },
-            ];
-            break;
-        case 10:
-            listData = [
-                { type: 'warning', content: 'This is warning event.' },
-                { type: 'success', content: 'This is usual event.' },
-                { type: 'error', content: 'This is error event.' },
-            ];
-            break;
-        case 15:
-            listData = [
-                { type: 'warning', content: 'This is warning event' },
-                { type: 'success', content: 'This is very long usual event......' },
-                { type: 'error', content: 'This is error event 1.' },
-                { type: 'error', content: 'This is error event 2.' },
-                { type: 'error', content: 'This is error event 3.' },
-                { type: 'error', content: 'This is error event 4.' },
-            ];
-            break;
-        default:
-    }
-    return listData || [];
-};
-const getMonthData = value => {
-    if (value.month() === 8) {
-        return 1394;
-    }
-};
 const Cal = () => {
-    const monthCellRender = value => {
-        const num = getMonthData(value);
-        return num ? (
-            <div className={css.notes_month}>
-                <section>{num}</section>
-                <span>Backlog number</span>
-            </div>
-        ) : null;
+    const { reminders, fetchReminders } = useCalStore();
+    const [modalVisible, setModalVisible] = useState(false);
+    const fam_id = 1; // Replace with real data
+
+    useEffect(() => {
+        fetchReminders(fam_id);
+    }, []);
+
+    const getListData = (value) => {
+        const dateStr = value.format('YYYY-MM-DD');
+        return reminders
+            .filter(reminder => dayjs(reminder.date).format('YYYY-MM-DD') === dateStr)
+            .map(reminder => ({
+                type: 'success',
+                content: reminder.title,
+            }));
     };
-    const dateCellRender = value => {
+
+    const dateCellRender = (value) => {
         const listData = getListData(value);
         return (
             <ul className={css.events}>
-                {listData.map(item => (
-                    <li className={css.calendar_tasks} style={{ fontSize: "10px" }} key={item.content}>
+                {listData.map((item, idx) => (
+                    <li className={css.calendar_tasks} style={{ fontSize: "10px" }} key={idx}>
                         <Badge status={item.type} text={item.content} />
                     </li>
                 ))}
             </ul>
         );
     };
-    const cellRender = (current, info) => {
-        if (info.type === 'date') return dateCellRender(current);
-        if (info.type === 'month') return monthCellRender(current);
-        return info.originNode;
-    };
+
     return (
-        <Calendar
-            className={css.calendar} // Ensure this matches your CSS class
-            cellRender={cellRender}
-        />
+        <>
+            <Button type="primary" onClick={() => setModalVisible(true)} style={{ marginBottom: "10px" }}>
+                + Add Reminder
+            </Button>
+            <Calendar
+                className={css.calendar}
+                cellRender={(current, info) =>
+                    info.type === 'date' ? dateCellRender(current) : info.originNode
+                }
+            />
+            <ReminderForm visible={modalVisible} setVisible={setModalVisible} fam_id={fam_id} />
+        </>
     );
 };
+
 export default Cal;

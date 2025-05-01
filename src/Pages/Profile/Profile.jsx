@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../../Components/Micro/Header/Header';
-import { Button, Form, Input, message, Table, Upload } from 'antd';
+import { Button, Form, Input, message, Upload } from 'antd';
 import { useProfile } from './ProfileStore';
 import { Link, useLocation } from 'react-router-dom';
 import { useForm } from 'antd/es/form/Form';

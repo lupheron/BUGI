@@ -32,8 +32,6 @@ function Main() {
                 {generateBreadcrumbs()}
             </header>
             <Cal />
-            <Status />
-            <SuggestCard />
         </div>
     );
 }
