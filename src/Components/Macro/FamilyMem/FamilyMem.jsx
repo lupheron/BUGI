@@ -23,7 +23,6 @@ function FamilyMem() {
         handleUpdate,
         handleCreate,
         handleCreateCat,
-        handleDeleteCat
     } = useFamMem();
 
     const familyId = localStorage.getItem("fam_id");

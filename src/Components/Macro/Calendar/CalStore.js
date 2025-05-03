@@ -14,7 +14,7 @@ export const useCalStore = create((set, get) => ({
     createReminder: async (data) => {
         try {
             await axios.post(`http://bugi.test/api/reminders`, data);
-            get().fetchReminders(data.fam_id);
+            get().fetchReminders(data.fam_id);  // Refresh reminders after creating one
         } catch (err) {
             console.error("Error creating reminder", err);
         }
