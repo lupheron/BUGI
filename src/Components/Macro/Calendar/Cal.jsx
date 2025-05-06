@@ -1,83 +1,65 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Calendar, Button, Modal } from 'antd';
+import { Calendar, Button, Modal } from 'antd';
 import css from '../../../assets/css/components.module.css';
 import dayjs from 'dayjs';
 import { useCalStore } from './CalStore';
 import ReminderForm from './ReminderForm';
+import axios from 'axios';
 
 const Cal = () => {
     const { reminders, fetchReminders } = useCalStore();
-    const [reminderModalVisible, setReminderModalVisible] = useState(false); // State for reminder details modal
-    const [reminderDetails, setReminderDetails] = useState(null);  // State to store reminder details for the modal
-    const [formModalVisible, setFormModalVisible] = useState(false);  // State for reminder form modal
-    const [reminderByOtherMembers, setReminderByOtherMembers] = useState({}); // State to track member-specific reminders
+    const [reminderModalVisible, setReminderModalVisible] = useState(false);
+    const [selectedDateReminders, setSelectedDateReminders] = useState([]);
+    const [formModalVisible, setFormModalVisible] = useState(false);
     const fam_id = localStorage.getItem('fam_id');
 
     useEffect(() => {
         fetchReminders(fam_id);
     }, []);
 
-    useEffect(() => {
-        // Group reminders by date and family member
-        const remindersByDate = reminders.reduce((acc, reminder) => {
-            const dateStr = dayjs(reminder.date).format('YYYY-MM-DD');
-            if (!acc[dateStr]) acc[dateStr] = [];
-            acc[dateStr].push(reminder);
-            return acc;
-        }, {});
-
-        setReminderByOtherMembers(remindersByDate);
-    }, [reminders]);
-
     const getListData = (value) => {
         const dateStr = value.format('YYYY-MM-DD');
-        return reminders
-            .filter(reminder => dayjs(reminder.date).format('YYYY-MM-DD') === dateStr)
-            .map(reminder => ({
-                type: 'success',
-                content: reminder.title,
-                reminder,  // Store full reminder data
-            }));
+        return reminders.filter(
+            reminder => dayjs(reminder.date).format('YYYY-MM-DD') === dateStr && reminder.status !== 1 // Exclude done reminders
+        );
     };
 
     const dateCellRender = (value) => {
         const listData = getListData(value);
-        const dateStr = value.format('YYYY-MM-DD');
-        const hasMultipleReminders = reminderByOtherMembers[dateStr]?.length > 1;
-        const familyMemberReminder = reminderByOtherMembers[dateStr]?.find(r => r.family_member_id !== fam_id);
-
-        return (
-            <ul className={css.events}>
-                {listData.map((item, idx) => (
-                    <li
-                        className={css.calendar_tasks}
-                        style={{ fontSize: "10px" }}
-                        key={idx}
-                        onClick={() => openReminderModal(item.reminder)}  // Open modal on click
-                    >
-                        <Badge
-                            status={hasMultipleReminders || familyMemberReminder ? 'warning' : 'success'}
-                            text={item.content}
-                            style={{
-                                fontSize: '20px',  // Increase size of the badge
-                                padding: '8px',    // Larger padding for the button
-                                borderRadius: '50%',  // Round the badge
-                            }}
-                        />
-                    </li>
-                ))}
-            </ul>
-        );
+        if (listData.length > 0) {
+            return (
+                <div style={{ fontSize: '12px', textAlign: 'center', color: 'rgb(171, 171, 171)', margin: '20px auto' }}>
+                    Got plans for the day
+                </div>
+            );
+        }
+        return null;
     };
 
-    const openReminderModal = (reminder) => {
-        setReminderDetails(reminder);  // Set reminder details for the modal
-        setReminderModalVisible(true);  // Show the reminder details modal
+    const handleDateClick = (value) => {
+        const dateReminders = getListData(value);
+        setSelectedDateReminders(dateReminders);
+        setReminderModalVisible(true);
     };
 
     const closeReminderModal = () => {
-        setReminderModalVisible(false);  // Close the reminder details modal
-        setReminderDetails(null);  // Clear reminder details
+        setReminderModalVisible(false);
+        setSelectedDateReminders([]);
+    };
+
+    const handleMarkAsDone = async (id) => {
+        try {
+            await axios.post('http://bugi.test/api/reminders-done', {
+                id,
+                status: 1, // Mark as done
+            });
+            // Refresh reminders after marking as done
+            fetchReminders(fam_id);
+            // Close the modal after marking as done
+            closeReminderModal();
+        } catch (error) {
+            console.error('Failed to mark reminder as done:', error);
+        }
     };
 
     return (
@@ -87,27 +69,40 @@ const Cal = () => {
             </Button>
             <Calendar
                 className={css.calendar}
-                cellRender={(current, info) =>
-                    info.type === 'date' ? dateCellRender(current) : info.originNode
-                }
+                onSelect={handleDateClick} // Open modal on date click
+                dateCellRender={dateCellRender}
             />
             <ReminderForm visible={formModalVisible} setVisible={setFormModalVisible} fam_id={fam_id} />
 
-            {/* Modal for viewing reminder details */}
+            {/* Modal for viewing reminders on a selected date */}
             <Modal
-                title="Reminder Details"
-                visible={reminderModalVisible && reminderDetails !== null}
+                title="Reminders"
+                visible={reminderModalVisible}
                 onCancel={closeReminderModal}
                 footer={null}
             >
-                {reminderDetails && (
-                    <div>
-                        <h3>Title: {reminderDetails.title}</h3>
-                        <p><strong>Category:</strong> {reminderDetails.category_name}</p>
-                        <p><strong>Description:</strong> {reminderDetails.description}</p>
-                        <p><strong>Date:</strong> {dayjs(reminderDetails.date).format('YYYY-MM-DD')}</p>
-                        <p><strong>Family Member:</strong> {reminderDetails.family_member_name}</p>
-                    </div>
+                {selectedDateReminders.length > 0 ? (
+                    <ul>
+                        {selectedDateReminders.map((reminder, idx) => (
+                            <li key={idx} style={{ marginBottom: '10px' }}>
+                                <p><strong>Title:</strong> {reminder.title}</p>
+                                <p><strong>Description:</strong> {reminder.description}</p>
+                                <p><strong>Date:</strong> {dayjs(reminder.date).format('YYYY-MM-DD')}</p>
+                                {reminder.family_member_name && (
+                                    <p><strong>Family Member:</strong> {reminder.family_member_name}</p>
+                                )}
+                                <Button
+                                    type="primary"
+                                    onClick={() => handleMarkAsDone(reminder.id)}
+                                    style={{ marginTop: '10px' }}
+                                >
+                                    Done
+                                </Button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No reminders for this date.</p>
                 )}
             </Modal>
         </>
