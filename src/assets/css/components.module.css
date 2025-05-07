@@ -4,14 +4,73 @@
     box-sizing: border-box;
 }
 
-.events{
+.events {
     font-size: 10px;
 }
 
-.calendar_tasks{
+.calendar_tasks {
     font-size: 10px;
 }
 
 .create_btn {
     float: right;
+}
+
+/* Modal container */
+.reminderModal {
+    text-align: left;
+    /* Align text to the left */
+}
+
+/* Reminder list */
+.reminderList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Reminder item */
+.reminderItem {
+    margin-bottom: 20px;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    /* Light gray background */
+}
+
+/* Grid layout for keys and values */
+.reminderGrid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    /* Two columns: keys and values */
+    gap: 10px;
+}
+
+/* Key (e.g., Family Member, Category) */
+.reminderKey {
+    font-weight: bold;
+    background-color: #e6e6e6;
+    /* Default input gray */
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #d9d9d9;
+    text-align: center;
+}
+
+/* Value (e.g., Family Member Name, Category Name) */
+.reminderValue {
+    padding: 5px;
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    background-color: #fff;
+    /* White background */
+}
+
+/* Done button */
+.reminderDoneBtn {
+    margin-top: 15px;
+    display: block;
+    width: 100%;
+    text-align: center;
 }

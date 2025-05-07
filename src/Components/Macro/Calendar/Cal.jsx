@@ -80,21 +80,30 @@ const Cal = () => {
                 visible={reminderModalVisible}
                 onCancel={closeReminderModal}
                 footer={null}
+                className={css.reminderModal}
             >
                 {selectedDateReminders.length > 0 ? (
-                    <ul>
+                    <ul className={css.reminderList}>
                         {selectedDateReminders.map((reminder, idx) => (
-                            <li key={idx} style={{ marginBottom: '10px' }}>
-                                <p><strong>Title:</strong> {reminder.title}</p>
-                                <p><strong>Description:</strong> {reminder.description}</p>
-                                <p><strong>Date:</strong> {dayjs(reminder.date).format('YYYY-MM-DD')}</p>
-                                {reminder.family_member_name && (
-                                    <p><strong>Family Member:</strong> {reminder.family_member_name}</p>
-                                )}
+                            <li key={idx} className={css.reminderItem}>
+                                <div className={css.reminderGrid}>
+                                    <div className={css.reminderKey}>Family Member</div>
+                                    <div className={css.reminderValue}>{reminder.family_member_name}</div>
+
+                                    <div className={css.reminderKey}>Category</div>
+                                    <div className={css.reminderValue}>{reminder.category_name}</div>
+
+                                    <div className={css.reminderKey}>Description</div>
+                                    <div className={css.reminderValue}>{reminder.description}</div>
+
+                                    <div className={css.reminderKey}>Date</div>
+                                    <div className={css.reminderValue}>{dayjs(reminder.date).format("YYYY-MM-DD")}</div>
+                                </div>
+
                                 <Button
                                     type="primary"
                                     onClick={() => handleMarkAsDone(reminder.id)}
-                                    style={{ marginTop: '10px' }}
+                                    className={css.reminderDoneBtn}
                                 >
                                     Done
                                 </Button>
